@@ -1,11 +1,12 @@
-require('dotenv').config()
 const bodyParser = require('body-parser')
 var cors = require('cors')
-
 const express = require('express')
-const server = express()
+const app = express()
+const http = require('http')
+const { Server } = require('socket.io')
+require('dotenv').config()
 
-server.use(cors())
+app.use(cors())
 
 const PORT = process.env.PORT || 3001
 const connectDB = require('./config/db')
@@ -13,11 +14,12 @@ const Inbox = require('./userModel')
 
 //conect to database
 connectDB()
-server.use(bodyParser.urlencoded({ extended: true }));
-server.use(bodyParser.json({ type: 'application/json' }))
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ type: 'application/json' }))
 const from = process.env.PHONE_NUMBER;
 const accountSid = process.env.TOKEN_SID;
 const authToken = process.env.TOKEN_SECRET;
+const twilio = require('twilio')(accountSid, authToken);
 // const to = process.env.MY_NUMBER;
 
 // const twilio = require('twilio')(
@@ -27,10 +29,29 @@ const authToken = process.env.TOKEN_SECRET;
 //         accountSid: process.env.ACCOUNT_SID
 //     }
 // )
+// Run server to listen on port 3000.
+const server = http.createServer(app);
 
-const twilio = require('twilio')(accountSid, authToken);
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POSt"]
+    },
+});
 
-server.post('/api/sendsms', async (req, res) => {
+io.on("connection", (socket) => {
+    console.log(`User Connected: ${socket.id}`);
+
+    socket.on("send_message", (data) => {
+        socket.broadcast.emit("reveive_message", data)
+    })
+})
+
+server.listen(PORT, () => {
+    console.log(`port is listening on ${PORT}`);
+})
+
+app.post('/api/sendsms', async (req, res) => {
     try {
         let smsdata = await twilio.messages
             .create({
@@ -60,8 +81,7 @@ server.post('/api/sendsms', async (req, res) => {
     }
 })
 
-server.post('/api/reciveSms', async (req, res) => {
-    console.log(req.body);
+app.post('/api/reciveSms', async (req, res) => {
     try {
         const inbox = new Inbox({
             MessageSid: req.body.SmsSid,
@@ -91,11 +111,10 @@ server.post('/api/reciveSms', async (req, res) => {
         };
     }
     console.log("massage is resive");
-    console.log(req.body)
 })
 
 
-server.post('/api/getsms', async (req, res) => {
+app.post('/api/getsms', async (req, res) => {
     try {
         let messages = await Inbox.find({ to: req.body.to });
         // console.log(messages)
@@ -112,7 +131,7 @@ server.post('/api/getsms', async (req, res) => {
 })
 
 
-server.get('/api/getNumber', async (req, res) => {
+app.get('/api/getNumber', async (req, res) => {
     try {
         let data = await Inbox.aggregate([
             {
@@ -148,6 +167,3 @@ server.get('/api/getNumber', async (req, res) => {
 
 // sendSms()
 
-server.listen(PORT, () => {
-    console.log(`Listingin on port ${PORT}`);
-})
