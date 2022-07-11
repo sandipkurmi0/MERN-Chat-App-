@@ -2,8 +2,6 @@ import moment from 'moment';
 
 function ChatMessage({ allMessage }) {
 
-    // console.log(allMessage.type)
-
     return (
         <>
             <ul>
@@ -27,8 +25,6 @@ function ChatMessage({ allMessage }) {
                                 }
 
                             </div>
-
-
                         </li>
                     )
                 })}

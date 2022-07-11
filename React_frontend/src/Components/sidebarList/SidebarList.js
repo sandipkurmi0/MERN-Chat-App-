@@ -3,12 +3,10 @@ import './sidebarList.css'
 import moment from 'moment'
 
 const SidebarList = ({ list, setCurrentNumber }) => {
-    console.log(list.message);
 
     const numberSelectHandler = () => {
-        const selectedSong = list
-        setCurrentNumber(selectedSong)
-
+        const selectedList = list
+        setCurrentNumber(selectedList)
     }
 
     return (

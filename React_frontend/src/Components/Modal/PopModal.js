@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Modal } from 'react-bootstrap';
+// import { getNumber } from '../../api/api'
 
 import './popmodal.css'
 import { sendSms } from '../../api/api'
@@ -21,9 +22,19 @@ const PopModal = () => {
     const submit = async () => {
         await sendSms({
             To: number,
-            Body: message
+            Body: message,
+            Type: "send"
         });
+
     }
+
+    // useEffect(() => {
+    //     getAllNumber()
+    // }, [])
+
+    // const getAllNumber = async () => {
+    //     await getNumber();
+    // }
 
     return (
         <>

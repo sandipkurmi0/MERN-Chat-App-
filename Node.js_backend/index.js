@@ -60,16 +60,14 @@ app.post('/api/sendsms', async (req, res) => {
                 from: from,
             })
 
-        console.log(smsdata);
 
         var inbox = new Inbox({
             MessageSid: smsdata.sid,
             message: smsdata.body,
             to: smsdata.to,
             Twilio_number: smsdata.from,
-            type: "send"
+            type: req.body.Type,
         });
-        console.log(inbox)
         data = await inbox.save()
         res.send(data)
     } catch (error) {
@@ -91,17 +89,15 @@ app.post('/api/reciveSms', async (req, res) => {
             type: req.body.SmsStatus
 
         })
-
-
         data = await inbox.save(function (err, result) {
             if (err) {
                 console.log(err);
             }
             else {
                 console.log(result)
+                io.sockets.emit('reveive_message', result);
             }
         })
-        res.send(data)
 
     } catch (error) {
         return {
@@ -110,14 +106,12 @@ app.post('/api/reciveSms', async (req, res) => {
             message: error.message
         };
     }
-    console.log("massage is resive");
 })
 
 
 app.post('/api/getsms', async (req, res) => {
     try {
         let messages = await Inbox.find({ to: req.body.to });
-        // console.log(messages)
         res.send(messages);
 
     } catch (error) {
@@ -138,11 +132,13 @@ app.get('/api/getNumber', async (req, res) => {
                 $group: {
                     _id: "$to",
                     message: { $last: "$message" },
-                    createdAt: { $first: "$createdAt" },
+                    createdAt: { $last: "$createdAt" }
                 }
-            }
+
+            },
+            { $sort: { createdAt: -1 } }
         ])
-        // console.log(data)
+
         res.send(data)
     } catch (error) {
         return {
@@ -154,16 +150,5 @@ app.get('/api/getNumber', async (req, res) => {
 
 })
 
-// function sendSms() {
-//     twilio.messages.create({
-//         from,
-//         to,
-//         body: "hello from twilio"
-//     })
-//         .then(message => console.log(`message sent with sid ${message.sid}`))
-//         .catch(error => console.error(error))
 
-// }
-
-// sendSms()
 

@@ -9,3 +9,17 @@
 //   },
 // );
 
+//send sms to phone_number
+
+// function sendSms() {
+//     twilio.messages.create({
+//         from,
+//         to,
+//         body: "hello from twilio"
+//     })
+//         .then(message => console.log(`message sent with sid ${message.sid}`))
+//         .catch(error => console.error(error))
+
+// }
+
+// sendSms()
