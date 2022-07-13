@@ -1,33 +1,52 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, createContext } from 'react'
 import Sidebar from '../Sidebar/Sidebar'
 import Navbar from '../Navbar/Navbar'
 import InputMessage from '../InputMessage/InputMessage'
 import ChatMessages from '../chatMessage/ChatMessage'
 import { getNumber, getMessage } from '../../api/api'
-
 import io from 'socket.io-client'
-const socket = io.connect("http://localhost:3001")
+const socket = io.connect("https://my-mern-chat-app-twilio.herokuapp.com")
+
+export const GlobalInfo = createContext()
 
 const Home = () => {
 
     const [numberList, setNumberList] = useState([])
-    const [currentNumber, setCurrentNumber] = useState(numberList[0])
+    const [currentNumber, setCurrentNumber] = useState([])
     const [allMessage, setAllMessage] = useState([])
 
+
+
     socket.on("reveive_message", (data) => {
-        setAllMessage([...allMessage, data])
+        if (currentNumber !== undefined) {
+
+            if (currentNumber._id === data.to) {
+                getAllMessage(data.to)
+            }
+        }
         getAllNumber()
     })
+
+
+    const divStyle = {
+        overflowY: 'scroll',
+        // border: '1px solid red',
+        width: '100%',
+        float: 'left',
+        height: '808px',
+        position: 'relative'
+    };
 
     useEffect(() => {
         if (currentNumber !== undefined) {
             getAllMessage(currentNumber._id);
         }
+        getAllNumber()
         // try {
         //     getMessage(currentNumber._id);
-        // } catch (error) {
+        // } catch (error) {    
         //     console.error(error);
-        // }
+        // }    
 
     }, [currentNumber])
 
@@ -36,26 +55,27 @@ const Home = () => {
         setAllMessage(response.data)
     }
 
-    useEffect(() => {
-        getAllNumber()
-    }, [])
-
     const getAllNumber = async () => {
         let response = await getNumber();
         setNumberList(response.data)
     }
 
+
     return (
-        <div style={{ display: "flex" }}>
-            <Sidebar numberList={numberList} setCurrentNumber={setCurrentNumber} />
-            <div style={{ flex: 5 }}>
-                <Navbar currentNumber={currentNumber} />
-                <div>
-                    <ChatMessages allMessage={allMessage} />
-                    <InputMessage currentNumber={currentNumber} setAllMessage={setAllMessage} allMessage={allMessage} getAllNumber={getAllNumber} getAllMessage={getAllMessage} />
+        <GlobalInfo.Provider value={{ numberList, allMessage, setCurrentNumber, currentNumber, getAllNumber }}>
+            <div style={{ display: "flex" }}>
+                <Sidebar />
+                <div style={{ flex: 5 }}>
+                    <Navbar />
+                    <div>
+                        <div style={divStyle}>
+                            <ChatMessages />
+                        </div>
+                        <InputMessage setAllMessage={setAllMessage} />
+                    </div>
                 </div>
             </div>
-        </div>
+        </GlobalInfo.Provider>
     )
 }
 

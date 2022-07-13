@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { sendSms } from '../../api/api'
 import './inputMessage.css'
+import { GlobalInfo } from "../Home/Home"
 
 
 
-
-const InputMessage = ({ currentNumber, setAllMessage, allMessage, getAllNumber, getAllMessage }) => {
+const InputMessage = ({ setAllMessage }) => {
+    const { currentNumber, allMessage, getAllNumber } = useContext(GlobalInfo)
 
     const [number, setNumber] = useState("")
     const [message, setMessage] = useState("")
+
 
     const sendMessage = async () => {
         await sendSms({
@@ -16,8 +18,7 @@ const InputMessage = ({ currentNumber, setAllMessage, allMessage, getAllNumber, 
             Body: message,
             Type: "send"
         })
-        // getAllMessage()
-        setAllMessage([...allMessage, { number, message, type: "send" }])
+        setAllMessage([...allMessage, { number, message, type: "send", _id: Date.now() }])
         getAllNumber()
         setMessage("")
     };
@@ -26,6 +27,7 @@ const InputMessage = ({ currentNumber, setAllMessage, allMessage, getAllNumber, 
         if (currentNumber !== undefined) {
             setNumber(currentNumber._id)
         }
+
     }, [currentNumber])
 
 

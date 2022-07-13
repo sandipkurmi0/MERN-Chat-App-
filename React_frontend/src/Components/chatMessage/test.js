@@ -23,3 +23,11 @@
 // }
 
 // sendSms()
+
+if (currentNumber !== undefined) {
+    if (currentNumber._id === list._id) {
+        setActive(!isActive);
+    }
+}
+
+const [isActive, setActive] = useState(false);

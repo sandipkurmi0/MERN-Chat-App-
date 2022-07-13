@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import PhoneIcon from '@material-ui/icons/Phone';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import './navbar.css'
 
-const Navbar = ({ currentNumber }) => {
+import { GlobalInfo } from "../Home/Home"
+
+
+
+const Navbar = () => {
+
+    const { currentNumber } = useContext(GlobalInfo)
 
     const [number, setNumber] = useState("")
 
@@ -11,8 +17,6 @@ const Navbar = ({ currentNumber }) => {
         if (currentNumber !== undefined) {
             setNumber(currentNumber._id)
         }
-
-
     }, [currentNumber])
 
 

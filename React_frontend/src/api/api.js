@@ -1,11 +1,11 @@
 import axios from 'axios'
 
 const api = axios.create({
-    baseURL: 'http://localhost:3001'
+    baseURL: 'https://my-mern-chat-app-twilio.herokuapp.com'
 });
 
 export const sendSms = async (data) => {
-    console.log(data);
+    // console.log(data)
     try {
         return await api.post(`/api/sendsms`, data)
 

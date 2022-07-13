@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/main.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,6 @@
     "twilio": "^3.78.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.18"
+    "nodemon": "^2.0.19"
   }
 }

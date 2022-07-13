@@ -2,6 +2,7 @@
   flex: 1;
   min-height: 100vh;
   border-right: 0.5px solid rgb(189, 189, 189);
+  /* overflow: scroll; */
 }
 
 .top {
@@ -38,8 +39,9 @@
 
 .SidebarList .row:hover {
   cursor: pointer;
-  background-color: #f8f8f8;
+  background-color: rgb(231, 225, 225);
 }
+
 .row {
   font-size: 14px;
   color: gray;
@@ -54,6 +56,10 @@
   font-weight: bold;
 }
 
-.SidebarList #active {
-  background-color: #f8f8f8;
+.active {
+  background-color: rgb(231, 225, 225);
 }
+
+/* .selected {
+  background-color: violet;
+} */

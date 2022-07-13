@@ -1,20 +1,19 @@
 import React, { useState } from 'react'
 import { Button, Modal } from 'react-bootstrap';
-// import { getNumber } from '../../api/api'
 
 import './popmodal.css'
 import { sendSms } from '../../api/api'
 
 
 const PopModal = () => {
-    // const url = "http://localhost:3001/api/sendsms"
 
     const [number, setNumber] = useState("")
     const [message, setMessage] = useState("")
 
+    console.log(number)
+    console.log(message);
 
     const [show, setShow] = useState(false);
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -28,14 +27,7 @@ const PopModal = () => {
 
     }
 
-    // useEffect(() => {
-    //     getAllNumber()
-    // }, [])
-
-    // const getAllNumber = async () => {
-    //     await getNumber();
-    // }
-
+    // console.log(submit);
     return (
         <>
             <Button variant="primary" onClick={handleShow} style={{ background: "rgb(129, 73, 248)", border: 'none' }}>
